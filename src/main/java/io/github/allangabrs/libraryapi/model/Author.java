@@ -1,16 +1,15 @@
 package io.github.allangabrs.libraryapi.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "author", schema = "public")
-@Getter
-@Setter
+@Data
 public class Author {
 
     @Id
@@ -26,5 +25,8 @@ public class Author {
 
     @Column(name = "nationality", length = 50, nullable = false)
     private String nationality;
+
+    @OneToMany(mappedBy = "author")
+    private List<Book> books;
 
 }
