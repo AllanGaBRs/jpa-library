@@ -9,6 +9,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "author", schema = "public")
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Data
 public class Author {
 
@@ -26,7 +29,8 @@ public class Author {
     @Column(name = "nationality", length = 50, nullable = false)
     private String nationality;
 
-    @OneToMany(mappedBy = "author")
+    //@OneToMany(mappedBy = "author")
+    @Transient
     private List<Book> books;
 
 }
