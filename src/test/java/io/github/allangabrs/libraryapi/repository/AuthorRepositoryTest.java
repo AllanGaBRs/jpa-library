@@ -18,13 +18,13 @@ public class AuthorRepositoryTest {
 
     @Test
     public void saveTest(){
-        Author autor = new Author();
-        autor.setName("allan");
-        autor.setNationality("ingles");
-        autor.setDate_birth(LocalDate.now());
+        Author author = new Author();
+        author.setName("allan");
+        author.setNationality("ingles");
+        author.setDate_birth(LocalDate.now());
 
-        autor = repository.save(autor);
-        System.out.println("Autor " + autor);
+        author = repository.save(author);
+        System.out.println("Autor " + author);
     }
 
     @Test
@@ -58,14 +58,14 @@ public class AuthorRepositoryTest {
 
     @Test
     public void deleteByIdTest(){
-        var id = UUID.fromString("eeb3d705-c280-4597-aa2f-e8fac7dc24b6");
+        var id = UUID.fromString("0d2acd9e-ea0f-4f09-841e-2f10de2f6d2c");
         repository.deleteById(id);
     }
 
     @Test
     public void deleteTest(){
         var id = UUID.fromString("5554ee52-94d3-45a0-a5fb-96e75ff9390a");
-        var author = repository.findById(id).get()  ;
+        var author = repository.findById(id).get();
         repository.delete(author);
     }
 }
