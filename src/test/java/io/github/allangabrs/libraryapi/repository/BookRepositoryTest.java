@@ -73,4 +73,17 @@ class BookRepositoryTest {
         book.setAuthor(author);
         bookRepository.save(book);
     }
+
+    @Test
+    void updateAuthor(){
+        var book = bookRepository.findById(
+                UUID.fromString("8059fa49-bda3-4d0e-93e6-8e114c81b8f0"))
+                .orElse(null);
+        Author author = authorRepository.findById(
+                UUID.fromString("9cda0c00-1f3b-438a-ac6c-ff356a7c4530"))
+                .orElse(null);
+
+        book.setAuthor(author);
+        bookRepository.save(book);
+    }
 }
