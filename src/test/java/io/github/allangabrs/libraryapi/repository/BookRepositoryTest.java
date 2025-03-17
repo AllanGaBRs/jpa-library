@@ -6,6 +6,7 @@ import io.github.allangabrs.libraryapi.model.BookGender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -86,4 +87,18 @@ class BookRepositoryTest {
         book.setAuthor(author);
         bookRepository.save(book);
     }
+
+    @Test
+    @Transactional
+    void findBook(){
+        UUID id = UUID.fromString("524a1f9f-5997-4465-abb5-5542b35b0307");
+        Book book = bookRepository.findById(id).orElse(null);
+
+        System.out.println("livro:");
+        System.out.println(book.getTitle());
+        System.out.println("autor:");
+        System.out.println(book.getAuthor().getName());
+
+    }
+
 }
