@@ -13,6 +13,7 @@ import java.util.UUID;
 @Setter
 @RequiredArgsConstructor
 @Data
+@ToString(exclude = "books")
 public class Author {
 
     @Id
@@ -29,7 +30,7 @@ public class Author {
     @Column(name = "nationality", length = 50, nullable = false)
     private String nationality;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<Book> books;
 
 }

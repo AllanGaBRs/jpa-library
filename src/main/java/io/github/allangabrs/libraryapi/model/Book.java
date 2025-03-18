@@ -10,6 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "book")
 @Data
+@ToString(exclude = "author")
 public class Book {
 
     @Id
