@@ -1,11 +1,15 @@
 package io.github.allangabrs.libraryapi.repository;
 
 import io.github.allangabrs.libraryapi.model.Author;
+import io.github.allangabrs.libraryapi.model.Book;
+import io.github.allangabrs.libraryapi.model.BookGender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,8 +20,11 @@ public class AuthorRepositoryTest {
     @Autowired
     AuthorRepository repository;
 
+    @Autowired
+    BookRepository bookRepository;
+
     @Test
-    public void saveTest(){
+    void saveTest(){
         Author author = new Author();
         author.setName("allan");
         author.setNationality("ingles");
@@ -28,7 +35,7 @@ public class AuthorRepositoryTest {
     }
 
     @Test
-    public void updateTest(){
+    void updateTest(){
         var id = UUID.fromString("eeb3d705-c280-4597-aa2f-e8fac7dc24b6");
 
         Optional<Author> possibleAuthor = repository.findById(id);
@@ -46,26 +53,58 @@ public class AuthorRepositoryTest {
     }
 
     @Test
-    public void listTest(){
+    void listTest(){
         List<Author> list = repository.findAll();
         list.forEach(System.out::println);
     }
 
     @Test
-    public void countTest(){
+    void countTest(){
         System.out.println("Contagem de autores: " + repository.count());
     }
 
     @Test
-    public void deleteByIdTest(){
+    void deleteByIdTest(){
         var id = UUID.fromString("0d2acd9e-ea0f-4f09-841e-2f10de2f6d2c");
         repository.deleteById(id);
     }
 
     @Test
-    public void deleteTest(){
+    void deleteTest(){
         var id = UUID.fromString("5554ee52-94d3-45a0-a5fb-96e75ff9390a");
         var author = repository.findById(id).get();
         repository.delete(author);
+    }
+
+    @Test
+    void saveAuthorWithBook(){
+        Author author = new Author();
+        author.setName("Santiago");
+        author.setNationality("coreano");
+        author.setDate_birth(LocalDate.of(2000, 12, 30));
+
+        Book book = new Book();
+        book.setIsbn("96567-56234");
+        book.setPrice(BigDecimal.valueOf(500));
+        book.setGender(BookGender.MISTERIO);
+        book.setTitle("misterio da semana");
+        book.setPublicationDate(LocalDate.of(2022, 5, 10));
+        book.setAuthor(author);
+
+        Book book2 = new Book();
+        book2.setIsbn("45521-56234");
+        book2.setPrice(BigDecimal.valueOf(440));
+        book2.setGender(BookGender.MISTERIO);
+        book2.setTitle("misterio do mes");
+        book2.setPublicationDate(LocalDate.of(2023, 5, 10));
+        book2.setAuthor(author);
+
+        author.setBooks(new ArrayList<Book>());
+        author.getBooks().add(book);
+        author.getBooks().add(book2);
+
+
+        repository.save(author);
+        bookRepository.saveAll(author.getBooks());
     }
 }
