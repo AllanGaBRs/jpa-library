@@ -95,9 +95,9 @@ class BookRepositoryTest {
         UUID id = UUID.fromString("524a1f9f-5997-4465-abb5-5542b35b0307");
         Book book = bookRepository.findById(id).orElse(null);
 
-        System.out.println("livro:");
+        System.out.println("Book:");
         System.out.println(book.getTitle());
-        System.out.println("autor:");
+        System.out.println("author:");
         System.out.println(book.getAuthor().getName());
 
     }
@@ -121,4 +121,39 @@ class BookRepositoryTest {
         list.forEach(System.out::println);
     }
 
+    @Test
+    void listBooksWithQueryJPQL(){
+        var result = bookRepository.listAllOrderByTitleAndPrice();
+        result.forEach(System.out::println);
+    }
+
+    @Test
+    void listAuthorsOfBooks(){
+        var result = bookRepository.listAuthorsOfBooks();
+        result.forEach(System.out::println);
+    }
+
+    @Test
+    void listNamesDistinctBooks(){
+        var result = bookRepository.listNamesDistinctBooks();
+        result.forEach(System.out::println);
+    }
+
+    @Test
+    void listGendersAuthorsMarroquinos(){
+        var result = bookRepository.listGendersAuthorsMarroquinos();
+        result.forEach(System.out::println);
+    }
+
+    @Test
+    void listByGenderQueryParamTest(){
+        var result = bookRepository.findByGender(BookGender.FICCAO, "publicationDate");
+        result.forEach(System.out::println);
+    }
+
+    @Test
+    void listByGenderQueryPositionalParamTest(){
+        var result = bookRepository.findByGenderPositionalParameters(BookGender.FICCAO, "publicationDate");
+        result.forEach(System.out::println);
+    }
 }

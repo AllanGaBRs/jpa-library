@@ -32,7 +32,7 @@ public class AuthorRepositoryTest {
         author.setDate_birth(LocalDate.now());
 
         author = repository.save(author);
-        System.out.println("Autor " + author);
+        System.out.println("author " + author);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class AuthorRepositoryTest {
         if(possibleAuthor.isPresent()){
             Author author = possibleAuthor.get();
 
-            System.out.println("Dados do autor");
+            System.out.println("Dados do author");
             System.out.println(author);
 
             author.setName("Allan");
@@ -61,7 +61,7 @@ public class AuthorRepositoryTest {
 
     @Test
     void countTest(){
-        System.out.println("Contagem de autores: " + repository.count());
+        System.out.println("Contagem de authores: " + repository.count());
     }
 
     @Test
