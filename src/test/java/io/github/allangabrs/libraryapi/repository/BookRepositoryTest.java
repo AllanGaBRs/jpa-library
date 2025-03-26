@@ -27,8 +27,8 @@ class BookRepositoryTest {
         Book book = new Book();
         book.setIsbn("90887-54854");
         book.setPrice(BigDecimal.valueOf(100));
-        book.setGender(BookGender.FICCAO);
-        book.setTitle("OVNIs");
+        book.setGender(BookGender.CIENCIA);
+        book.setTitle("CIENCIA da REGI");
         book.setPublicationDate(LocalDate.of(2000, 10, 20));
 
         Author author = authorRepository
@@ -155,5 +155,15 @@ class BookRepositoryTest {
     void listByGenderQueryPositionalParamTest(){
         var result = bookRepository.findByGenderPositionalParameters(BookGender.FICCAO, "publicationDate");
         result.forEach(System.out::println);
+    }
+
+    @Test
+    void deleteByGenderTest(){
+        bookRepository.deleteByGender(BookGender.CIENCIA);
+    }
+
+    @Test
+    void updatePublicationDateTest(){
+        bookRepository.updatePublicationDate(LocalDate.now());
     }
 }
