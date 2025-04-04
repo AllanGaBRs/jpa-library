@@ -3,8 +3,10 @@ package io.github.allangabrs.libraryapi.controller.dto;
 import io.github.allangabrs.libraryapi.model.Author;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record AuthorDTO(
+        UUID id,
         String name,
         LocalDate dateBirth,
         String nationality
