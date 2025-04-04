@@ -2,14 +2,19 @@ package io.github.allangabrs.libraryapi.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "author", schema = "public")
+@EntityListeners(AuditingEntityListener.class)
 public class Author {
 
     @Id
@@ -29,16 +34,30 @@ public class Author {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<Book> books;
 
+    @CreatedDate
+    @Column(name = "register_date")
+    private LocalDateTime registerDate;
+
+    @LastModifiedDate
+    @Column(name = "update_date")
+    private LocalDateTime updateDate;
+
+    @Column(name = "id_user")
+    private UUID idUser;
+
     public Author() {
 
     }
 
-    public Author(UUID id, String name, LocalDate date_birth, String nationality, List<Book> books) {
-        this.id = id;
+    public Author(String name, UUID id, LocalDate date_birth, String nationality, List<Book> books, LocalDateTime registerDate, LocalDateTime updateDate, UUID idUser) {
         this.name = name;
+        this.id = id;
         this.date_birth = date_birth;
         this.nationality = nationality;
         this.books = books;
+        this.registerDate = registerDate;
+        this.updateDate = updateDate;
+        this.idUser = idUser;
     }
 
     public UUID getId() {
@@ -81,17 +100,28 @@ public class Author {
         this.books = books;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Author author = (Author) o;
-        return Objects.equals(id, author.id) && Objects.equals(name, author.name) && Objects.equals(date_birth, author.date_birth) && Objects.equals(nationality, author.nationality) && Objects.equals(books, author.books);
+    public LocalDateTime getRegisterDate() {
+        return registerDate;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, date_birth, nationality, books);
+    public void setRegisterDate(LocalDateTime registerDate) {
+        this.registerDate = registerDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public UUID getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(UUID idUser) {
+        this.idUser = idUser;
     }
 
     @Override
