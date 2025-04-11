@@ -13,32 +13,39 @@ import java.util.UUID;
 @Service
 public class AuthorService {
 
-   private final AuthorRepository authorRepository;
+    private final AuthorRepository authorRepository;
 
-   public AuthorService(AuthorRepository authorRepository){
-       this.authorRepository = authorRepository;
-   }
-
-    public Author save(Author author){
-       return authorRepository.save(author);
+    public AuthorService(AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
     }
 
-    public Optional<Author> findById(UUID id){
-       return authorRepository.findById(id);
+    public Author save(Author author) {
+        return authorRepository.save(author);
     }
 
-    public void delete(Author author){
-       authorRepository.delete(author);
+    public void update(Author author) {
+        if(author.getId() == null){
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
+        authorRepository.save(author);
     }
 
-    public List<Author> search(String name, String nationality){
-        if(name != null && nationality != null){
+    public Optional<Author> findById(UUID id) {
+        return authorRepository.findById(id);
+    }
+
+    public void delete(Author author) {
+        authorRepository.delete(author);
+    }
+
+    public List<Author> search(String name, String nationality) {
+        if (name != null && nationality != null) {
             return authorRepository.findByNameAndNationality(name, nationality);
         }
-        if(name != null){
+        if (name != null) {
             return authorRepository.findByName(name);
         }
-        if(nationality != null){
+        if (nationality != null) {
             return authorRepository.findByNationality(nationality);
         }
         return authorRepository.findAll();

@@ -71,8 +71,8 @@ public class AuthorController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "nationality", required = false) String nationality){
         List<Author> result = service.search(name, nationality);
-        List<AuthorDTO> list = result.
-                stream()
+        List<AuthorDTO> list = result
+                .stream()
                 .map(author -> new AuthorDTO(
                     author.getId(),
                     author.getName(),
@@ -80,5 +80,24 @@ public class AuthorController {
                     author.getNationality())
                 ).collect(Collectors.toList());
         return ResponseEntity.ok(list);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(
+            @PathVariable String id, @RequestBody AuthorDTO dto){
+        var idAuthor = UUID.fromString(id);
+        Optional<Author> authorOptional = service.findById(idAuthor);
+        if(authorOptional.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        var author = authorOptional.get();
+        author.setName(dto.name());
+        author.setNationality(dto.nationality());
+        author.setDate_birth(dto.dateBirth());
+
+        service.update(author);
+        return ResponseEntity.noContent().build();
+
     }
 }
