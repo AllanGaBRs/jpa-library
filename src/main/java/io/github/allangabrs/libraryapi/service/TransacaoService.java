@@ -35,7 +35,7 @@ public class TransacaoService {
         Author author = new Author();
         author.setName("Teste José");
         author.setNationality("marroquino");
-        author.setDate_birth(LocalDate.now());
+        author.setDateBirth(LocalDate.now());
 
         authorRepository.save(author);
 

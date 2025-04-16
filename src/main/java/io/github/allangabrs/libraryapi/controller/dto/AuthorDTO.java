@@ -14,7 +14,7 @@ public record AuthorDTO(
     public Author entity(){
         Author author = new Author();
         author.setName(this.name);
-        author.setDate_birth(this.dateBirth);
+        author.setDateBirth(this.dateBirth);
         author.setNationality(this.nationality);
         return author;
     }

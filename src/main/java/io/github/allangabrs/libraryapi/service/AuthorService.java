@@ -3,6 +3,7 @@ package io.github.allangabrs.libraryapi.service;
 import io.github.allangabrs.libraryapi.controller.dto.AuthorDTO;
 import io.github.allangabrs.libraryapi.model.Author;
 import io.github.allangabrs.libraryapi.repository.AuthorRepository;
+import io.github.allangabrs.libraryapi.validator.AuthorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +15,15 @@ import java.util.UUID;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final AuthorValidator authorValidator;
 
-    public AuthorService(AuthorRepository authorRepository) {
+    public AuthorService(AuthorRepository authorRepository, AuthorValidator authorValidator) {
         this.authorRepository = authorRepository;
+        this.authorValidator = authorValidator;
     }
 
     public Author save(Author author) {
+        authorValidator.validate(author);
         return authorRepository.save(author);
     }
 
@@ -27,6 +31,7 @@ public class AuthorService {
         if(author.getId() == null){
             throw new IllegalArgumentException("Usuário não encontrado");
         }
+        authorValidator.validate(author);
         authorRepository.save(author);
     }
 

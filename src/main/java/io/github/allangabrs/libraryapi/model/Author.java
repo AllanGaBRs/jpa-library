@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -26,7 +25,7 @@ public class Author {
     private String name;
 
     @Column(name = "date_birth", nullable = false)
-    private LocalDate date_birth;
+    private LocalDate dateBirth;
 
     @Column(name = "nationality", length = 50, nullable = false)
     private String nationality;
@@ -49,10 +48,10 @@ public class Author {
 
     }
 
-    public Author(String name, UUID id, LocalDate date_birth, String nationality, List<Book> books, LocalDateTime registerDate, LocalDateTime updateDate, UUID idUser) {
+    public Author(String name, UUID id, LocalDate dateBirth, String nationality, List<Book> books, LocalDateTime registerDate, LocalDateTime updateDate, UUID idUser) {
         this.name = name;
         this.id = id;
-        this.date_birth = date_birth;
+        this.dateBirth = dateBirth;
         this.nationality = nationality;
         this.books = books;
         this.registerDate = registerDate;
@@ -76,12 +75,12 @@ public class Author {
         this.name = name;
     }
 
-    public LocalDate getDate_birth() {
-        return date_birth;
+    public LocalDate getDateBirth() {
+        return dateBirth;
     }
 
-    public void setDate_birth(LocalDate date_birth) {
-        this.date_birth = date_birth;
+    public void setDateBirth(LocalDate dateBirth) {
+        this.dateBirth = dateBirth;
     }
 
     public String getNationality() {
@@ -129,7 +128,7 @@ public class Author {
         return "Author{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", date_birth=" + date_birth +
+                ", date_birth=" + dateBirth +
                 ", nationality='" + nationality + '\'' +
                 '}';
     }

@@ -1,9 +1,12 @@
 package io.github.allangabrs.libraryapi.controller;
 
 import io.github.allangabrs.libraryapi.controller.dto.AuthorDTO;
+import io.github.allangabrs.libraryapi.controller.dto.ResponseError;
+import io.github.allangabrs.libraryapi.excecptions.DuplicateRecordException;
 import io.github.allangabrs.libraryapi.model.Author;
 import io.github.allangabrs.libraryapi.service.AuthorService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,18 +27,24 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody AuthorDTO authorDTO){
-        Author author = authorDTO.entity();
-        service.save(author);
+    public ResponseEntity<Object> save(@RequestBody AuthorDTO authorDTO){
+        try {
 
-        //http://localhost:8080/authors/20eec8e5-5d3c-4ec6-9ac0-c4b4b5febada
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(author.getId())
-                .toUri();
+            Author author = authorDTO.entity();
+            service.save(author);
 
-        return ResponseEntity.created(location).build();
+            //http://localhost:8080/authors/20eec8e5-5d3c-4ec6-9ac0-c4b4b5febada
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(author.getId())
+                    .toUri();
+
+            return ResponseEntity.created(location).build();
+        } catch (DuplicateRecordException e){
+            var errorDTO = ResponseError.conflict(e.getMessage());
+            return ResponseEntity.status(errorDTO.status()).body(errorDTO);
+        }
     }
 
     @GetMapping("/{id}")
@@ -46,7 +55,7 @@ public class AuthorController {
             AuthorDTO dto = new AuthorDTO(
                     author.getId(),
                     author.getName(),
-                    author.getDate_birth(),
+                    author.getDateBirth(),
                     author.getNationality()
             );
             return ResponseEntity.ok(dto);
@@ -76,7 +85,7 @@ public class AuthorController {
                 .map(author -> new AuthorDTO(
                     author.getId(),
                     author.getName(),
-                    author.getDate_birth(),
+                    author.getDateBirth(),
                     author.getNationality())
                 ).collect(Collectors.toList());
         return ResponseEntity.ok(list);
@@ -94,7 +103,7 @@ public class AuthorController {
         var author = authorOptional.get();
         author.setName(dto.name());
         author.setNationality(dto.nationality());
-        author.setDate_birth(dto.dateBirth());
+        author.setDateBirth(dto.dateBirth());
 
         service.update(author);
         return ResponseEntity.noContent().build();
