@@ -3,6 +3,7 @@ package io.github.allangabrs.libraryapi.controller;
 import io.github.allangabrs.libraryapi.controller.dto.AuthorDTO;
 import io.github.allangabrs.libraryapi.controller.dto.ResponseError;
 import io.github.allangabrs.libraryapi.excecptions.DuplicateRecordException;
+import io.github.allangabrs.libraryapi.excecptions.OperationNotPermittedException;
 import io.github.allangabrs.libraryapi.model.Author;
 import io.github.allangabrs.libraryapi.service.AuthorService;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody AuthorDTO authorDTO){
+    public ResponseEntity<Object> save(@RequestBody AuthorDTO authorDTO) {
         try {
 
             Author author = authorDTO.entity();
@@ -41,16 +42,16 @@ public class AuthorController {
                     .toUri();
 
             return ResponseEntity.created(location).build();
-        } catch (DuplicateRecordException e){
+        } catch (DuplicateRecordException e) {
             var errorDTO = ResponseError.conflict(e.getMessage());
             return ResponseEntity.status(errorDTO.status()).body(errorDTO);
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AuthorDTO> findById(@PathVariable("id") String id){
+    public ResponseEntity<AuthorDTO> findById(@PathVariable("id") String id) {
         Optional<Author> authorOptional = service.findById(UUID.fromString(id));
-        if(authorOptional.isPresent()){
+        if (authorOptional.isPresent()) {
             Author author = authorOptional.get();
             AuthorDTO dto = new AuthorDTO(
                     author.getId(),
@@ -65,48 +66,57 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id){
-        Optional<Author> authorOptional = service.findById(UUID.fromString(id));
-        if(authorOptional.isEmpty()){
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Object> delete(@PathVariable("id") String id) {
+        try {
+            Optional<Author> authorOptional = service.findById(UUID.fromString(id));
+            if (authorOptional.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            service.delete(authorOptional.get());
+            return ResponseEntity.noContent().build();
+        } catch (OperationNotPermittedException e) {
+            var error = ResponseError.patternResponse(e.getMessage());
+            return ResponseEntity.status(error.status()).body(error);
+        }
+    }
+        @GetMapping
+        public ResponseEntity<List<AuthorDTO>> search (
+                @RequestParam(value = "name", required = false) String name,
+                @RequestParam(value = "nationality", required = false) String nationality){
+            List<Author> result = service.search(name, nationality);
+            List<AuthorDTO> list = result
+                    .stream()
+                    .map(author -> new AuthorDTO(
+                            author.getId(),
+                            author.getName(),
+                            author.getDateBirth(),
+                            author.getNationality())
+                    ).collect(Collectors.toList());
+            return ResponseEntity.ok(list);
         }
 
-        service.delete(authorOptional.get());
-        return ResponseEntity.noContent().build();
-    }
+        @PutMapping("/{id}")
+        public ResponseEntity<Object> update (
+                @PathVariable String id, @RequestBody AuthorDTO dto){
+            try {
 
-    @GetMapping
-    public ResponseEntity<List<AuthorDTO>> search(
-            @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "nationality", required = false) String nationality){
-        List<Author> result = service.search(name, nationality);
-        List<AuthorDTO> list = result
-                .stream()
-                .map(author -> new AuthorDTO(
-                    author.getId(),
-                    author.getName(),
-                    author.getDateBirth(),
-                    author.getNationality())
-                ).collect(Collectors.toList());
-        return ResponseEntity.ok(list);
-    }
+                var idAuthor = UUID.fromString(id);
+                Optional<Author> authorOptional = service.findById(idAuthor);
+                if (authorOptional.isEmpty()) {
+                    return ResponseEntity.notFound().build();
+                }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> update(
-            @PathVariable String id, @RequestBody AuthorDTO dto){
-        var idAuthor = UUID.fromString(id);
-        Optional<Author> authorOptional = service.findById(idAuthor);
-        if(authorOptional.isEmpty()){
-            return ResponseEntity.notFound().build();
+                var author = authorOptional.get();
+                author.setName(dto.name());
+                author.setNationality(dto.nationality());
+                author.setDateBirth(dto.dateBirth());
+
+                service.update(author);
+                return ResponseEntity.noContent().build();
+            } catch (DuplicateRecordException e) {
+                var errorDTO = ResponseError.conflict(e.getMessage());
+                return ResponseEntity.status(errorDTO.status()).body(errorDTO);
+            }
         }
-
-        var author = authorOptional.get();
-        author.setName(dto.name());
-        author.setNationality(dto.nationality());
-        author.setDateBirth(dto.dateBirth());
-
-        service.update(author);
-        return ResponseEntity.noContent().build();
-
     }
-}

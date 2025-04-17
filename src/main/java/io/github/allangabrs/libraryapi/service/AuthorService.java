@@ -1,8 +1,10 @@
 package io.github.allangabrs.libraryapi.service;
 
 import io.github.allangabrs.libraryapi.controller.dto.AuthorDTO;
+import io.github.allangabrs.libraryapi.excecptions.OperationNotPermittedException;
 import io.github.allangabrs.libraryapi.model.Author;
 import io.github.allangabrs.libraryapi.repository.AuthorRepository;
+import io.github.allangabrs.libraryapi.repository.BookRepository;
 import io.github.allangabrs.libraryapi.validator.AuthorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,14 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorValidator authorValidator;
+    private final BookRepository bookRepository;
 
-    public AuthorService(AuthorRepository authorRepository, AuthorValidator authorValidator) {
+    public AuthorService(AuthorRepository authorRepository,
+                         AuthorValidator authorValidator,
+                         BookRepository bookRepository) {
         this.authorRepository = authorRepository;
         this.authorValidator = authorValidator;
+        this.bookRepository = bookRepository;
     }
 
     public Author save(Author author) {
@@ -40,6 +46,10 @@ public class AuthorService {
     }
 
     public void delete(Author author) {
+        if(hasBook(author)){
+            throw new OperationNotPermittedException(
+                    "Não é permitido deletar um autor que possui livros cadastrados");
+        }
         authorRepository.delete(author);
     }
 
@@ -54,5 +64,9 @@ public class AuthorService {
             return authorRepository.findByNationality(nationality);
         }
         return authorRepository.findAll();
+    }
+
+    public boolean hasBook(Author author){
+        return bookRepository.existsByAuthor(author);
     }
 }

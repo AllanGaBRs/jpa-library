@@ -29,7 +29,7 @@ public class AuthorRepositoryTest {
         Author author = new Author();
         author.setName("allan");
         author.setNationality("ingles");
-        author.setDate_birth(LocalDate.now());
+        author.setDateBirth(LocalDate.now());
 
         author = repository.save(author);
         System.out.println("author " + author);
@@ -48,7 +48,7 @@ public class AuthorRepositoryTest {
             System.out.println(author);
 
             author.setName("Allan");
-            author.setDate_birth(LocalDate.of(2020, 10,10));
+            author.setDateBirth(LocalDate.of(2020, 10,10));
             repository.save(author);
         }
     }
@@ -82,7 +82,7 @@ public class AuthorRepositoryTest {
         Author author = new Author();
         author.setName("Santiago");
         author.setNationality("coreano");
-        author.setDate_birth(LocalDate.of(2000, 12, 30));
+        author.setDateBirth(LocalDate.of(2000, 12, 30));
 
         Book book = new Book();
         book.setIsbn("96567-56234");

@@ -32,7 +32,7 @@ class BookRepositoryTest {
         book.setPublicationDate(LocalDate.of(2000, 10, 20));
 
         Author author = authorRepository
-                .findById(UUID.fromString("33fe0b68-3883-416d-9244-359f5f794589"))
+                .findById(UUID.fromString("fafa73a7-98e6-427a-9838-5ebbd42f592d"))
                 .orElse(null);
 
         book.setAuthor(author);
@@ -51,7 +51,7 @@ class BookRepositoryTest {
         Author author = new Author();
         author.setName("Felipe");
         author.setNationality("marroquino");
-        author.setDate_birth(LocalDate.now());
+        author.setDateBirth(LocalDate.now());
         authorRepository.save(author);
 
         book.setAuthor(author);
@@ -70,7 +70,7 @@ class BookRepositoryTest {
         Author author = new Author();
         author.setName("João");
         author.setNationality("ingles");
-        author.setDate_birth(LocalDate.now());
+        author.setDateBirth(LocalDate.now());
 
         book.setAuthor(author);
         bookRepository.save(book);
