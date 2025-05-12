@@ -7,7 +7,7 @@ import java.util.List;
 public record ResponseError(
         int status,
         String message,
-        List<FieldError> listFieldError
+        List<ErroCampo> listFieldError
 ) {
     public static ResponseError patternResponse(String message){
         return new ResponseError(HttpStatus.BAD_REQUEST.value(), message, List.of());

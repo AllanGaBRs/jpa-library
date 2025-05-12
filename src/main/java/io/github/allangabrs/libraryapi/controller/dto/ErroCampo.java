@@ -1,6 +1,6 @@
 package io.github.allangabrs.libraryapi.controller.dto;
 
-public record FieldError(
+public record ErroCampo(
         String field,
         String error
 ) {
