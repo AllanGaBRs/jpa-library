@@ -80,43 +80,44 @@ public class AuthorController {
             return ResponseEntity.status(error.status()).body(error);
         }
     }
-        @GetMapping
-        public ResponseEntity<List<AuthorDTO>> search (
-                @RequestParam(value = "name", required = false) String name,
-                @RequestParam(value = "nationality", required = false) String nationality){
-            List<Author> result = service.search(name, nationality);
-            List<AuthorDTO> list = result
-                    .stream()
-                    .map(author -> new AuthorDTO(
-                            author.getId(),
-                            author.getName(),
-                            author.getDateBirth(),
-                            author.getNationality())
-                    ).collect(Collectors.toList());
-            return ResponseEntity.ok(list);
-        }
 
-        @PutMapping("/{id}")
-        public ResponseEntity<Object> update (
-                @PathVariable String id, @RequestBody AuthorDTO dto){
-            try {
+    @GetMapping
+    public ResponseEntity<List<AuthorDTO>> search(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "nationality", required = false) String nationality) {
+        List<Author> result = service.search(name, nationality);
+        List<AuthorDTO> list = result
+                .stream()
+                .map(author -> new AuthorDTO(
+                        author.getId(),
+                        author.getName(),
+                        author.getDateBirth(),
+                        author.getNationality())
+                ).collect(Collectors.toList());
+        return ResponseEntity.ok(list);
+    }
 
-                var idAuthor = UUID.fromString(id);
-                Optional<Author> authorOptional = service.findById(idAuthor);
-                if (authorOptional.isEmpty()) {
-                    return ResponseEntity.notFound().build();
-                }
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(
+            @PathVariable String id, @RequestBody @Valid AuthorDTO dto) {
+        try {
 
-                var author = authorOptional.get();
-                author.setName(dto.name());
-                author.setNationality(dto.nationality());
-                author.setDateBirth(dto.dateBirth());
-
-                service.update(author);
-                return ResponseEntity.noContent().build();
-            } catch (DuplicateRecordException e) {
-                var errorDTO = ResponseError.conflict(e.getMessage());
-                return ResponseEntity.status(errorDTO.status()).body(errorDTO);
+            var idAuthor = UUID.fromString(id);
+            Optional<Author> authorOptional = service.findById(idAuthor);
+            if (authorOptional.isEmpty()) {
+                return ResponseEntity.notFound().build();
             }
+
+            var author = authorOptional.get();
+            author.setName(dto.name());
+            author.setNationality(dto.nationality());
+            author.setDateBirth(dto.dateBirth());
+
+            service.update(author);
+            return ResponseEntity.noContent().build();
+        } catch (DuplicateRecordException e) {
+            var errorDTO = ResponseError.conflict(e.getMessage());
+            return ResponseEntity.status(errorDTO.status()).body(errorDTO);
         }
     }
+}
