@@ -7,6 +7,8 @@ import io.github.allangabrs.libraryapi.repository.AuthorRepository;
 import io.github.allangabrs.libraryapi.repository.BookRepository;
 import io.github.allangabrs.libraryapi.validator.AuthorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,6 +66,22 @@ public class AuthorService {
             return authorRepository.findByNationality(nationality);
         }
         return authorRepository.findAll();
+    }
+
+    public List<Author> searchByExample(String name, String nationality){
+        var author = new Author();
+        author.setName(name);
+        author.setNationality(nationality);
+
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnorePaths("id", "dateBirth")
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Author> authorExample = Example.of(author, matcher);
+
+        return authorRepository.findAll(authorExample);
     }
 
     public boolean hasBook(Author author){
